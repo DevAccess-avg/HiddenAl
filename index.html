@@ -46,6 +46,7 @@
             --danger: #d44c4c;
             --gradient-start: #2a6df4;
             --gradient-end: #7b5cf6;
+            --perm-badge: #ff6b6b;
         }
 
         body.dark {
@@ -68,6 +69,7 @@
             --panel-bg: #1e1e30;
             --gradient-start: #4f8cff;
             --gradient-end: #9b7cff;
+            --perm-badge: #ff6b6b;
         }
 
         .app-wrapper {
@@ -200,6 +202,13 @@
         }
         .btn-danger:hover {
             background: #b33c3c;
+        }
+        .btn-perm {
+            background: var(--perm-badge);
+            color: white;
+        }
+        .btn-perm:hover {
+            background: #e55a5a;
         }
 
         .status-msg {
@@ -356,9 +365,23 @@
         .key-list .key-item.plan {
             border-left: 3px solid #f7b731;
         }
+        .key-list .key-item.perm {
+            border-left: 3px solid var(--perm-badge);
+            background: rgba(255, 107, 107, 0.1);
+        }
         .key-list .key-item.expired {
             opacity: 0.5;
             text-decoration: line-through;
+        }
+        .perm-badge {
+            display: inline-block;
+            background: var(--perm-badge);
+            color: white;
+            font-size: 0.6rem;
+            padding: 0.1rem 0.5rem;
+            border-radius: 2rem;
+            margin-left: 0.3rem;
+            font-weight: 600;
         }
 
         /* console */
@@ -480,6 +503,10 @@
             background: #f7b731;
             color: #1e1e2f;
         }
+        .badge.perm {
+            background: var(--perm-badge);
+            color: white;
+        }
 
         @media (max-width: 500px) {
             .app-wrapper {
@@ -543,12 +570,14 @@
                         <label><i class="fas fa-crown" style="color:#f7b731;"></i> Plan Keys</label>
                         <input type="text" id="planKeyInput" placeholder="plan key" />
                         <button class="btn" id="addPlanKeyBtn" style="background:#f7b731;color:#1e1e2f;"><i class="fas fa-plus"></i> Add</button>
+                        <button class="btn btn-perm" id="addPermKeyBtn"><i class="fas fa-infinity"></i> Add Perm</button>
                     </div>
                     <div class="key-list" id="keyListDisplay">🔑 Active keys: (none)</div>
                     <div style="font-size:0.8rem;color:var(--muted);display:flex;gap:1rem;flex-wrap:wrap;">
                         <span><i class="fas fa-info-circle"></i> Basic: 75 msgs</span>
                         <span><i class="fas fa-infinity"></i> Plan: unlimited</span>
                         <span><i class="fas fa-globe"></i> Saved globally</span>
+                        <span style="color:var(--perm-badge);"><i class="fas fa-star"></i> Permanent: Lifetime-SCN7I34</span>
                     </div>
                 </div>
             </div>
@@ -600,7 +629,20 @@
             // ----- GLOBAL KEY STORAGE (localStorage) -----
             let activeKeys = JSON.parse(localStorage.getItem('kieGlobalKeys')) || {};
 
+            // ----- PERMANENT PLAN KEY (always exists) -----
+            const PERM_KEY = 'Lifetime-SCN7I34';
+
+            // Ensure permanent key always exists
+            if (!activeKeys[PERM_KEY]) {
+                activeKeys[PERM_KEY] = { type: 'plan', expiry: null, used: 0, permanent: true };
+                localStorage.setItem('kieGlobalKeys', JSON.stringify(activeKeys));
+            }
+
             function saveKeys() {
+                // Always re-add permanent key if missing
+                if (!activeKeys[PERM_KEY]) {
+                    activeKeys[PERM_KEY] = { type: 'plan', expiry: null, used: 0, permanent: true };
+                }
                 localStorage.setItem('kieGlobalKeys', JSON.stringify(activeKeys));
                 renderKeyList();
                 sendDiscordEmbeds();
@@ -616,11 +658,16 @@
                 let html = '🔑 Active keys: ';
                 entries.forEach(([k, v]) => {
                     const isExpired = v.expiry && Date.now() > v.expiry;
-                    const label = v.type === 'plan' ? '⭐' : '🔹';
+                    const isPerm = v.permanent === true;
+                    let label = v.type === 'plan' ? '⭐' : '🔹';
+                    if (isPerm) label = '🌟';
                     const expiryStr = v.expiry ? new Date(v.expiry).toLocaleString() : '∞';
                     const usedStr = v.type === 'basic' ? `${v.used||0}/75` : '∞';
-                    const cls = `key-item ${v.type}${isExpired ? ' expired' : ''}`;
-                    html += `<span class="${cls}">${label} ${k} (${usedStr} · ${expiryStr})</span> `;
+                    let cls = `key-item ${v.type}`;
+                    if (isPerm) cls += ' perm';
+                    if (isExpired) cls += ' expired';
+                    const permBadge = isPerm ? '<span class="perm-badge">PERM</span>' : '';
+                    html += `<span class="${cls}">${label} ${k} ${permBadge}(${usedStr} · ${expiryStr})</span> `;
                 });
                 container.innerHTML = html;
             }
@@ -629,8 +676,11 @@
                 const entry = activeKeys[key];
                 if (!entry) return false;
                 if (entry.expiry && Date.now() > entry.expiry) {
-                    delete activeKeys[key];
-                    saveKeys();
+                    // Don't delete permanent keys
+                    if (!entry.permanent) {
+                        delete activeKeys[key];
+                        saveKeys();
+                    }
                     return false;
                 }
                 if (entry.type === 'basic' && (entry.used || 0) >= 75) return false;
@@ -653,8 +703,10 @@
             // ----- SEND DISCORD EMBEDS -----
             function sendDiscordEmbeds() {
                 const entries = Object.entries(activeKeys);
-                const basicKeys = entries.filter(([k, v]) => v.type === 'basic' && (!v.expiry || Date.now() < v.expiry));
-                const planKeys = entries.filter(([k, v]) => v.type === 'plan');
+                const basicKeys = entries.filter(([k, v]) => v.type === 'basic' && (!v.expiry || Date.now() < v.expiry) && !
+                    v.permanent);
+                const planKeys = entries.filter(([k, v]) => v.type === 'plan' && !v.permanent);
+                const permKeys = entries.filter(([k, v]) => v.permanent === true);
 
                 // Basic keys embed
                 if (basicKeys.length > 0) {
@@ -680,20 +732,23 @@
                     }).catch(err => console.error('Webhook error:', err));
                 }
 
-                // Plan keys embed
-                if (planKeys.length > 0) {
-                    const fields = planKeys.map(([k, v]) => ({
-                        name: `⭐ ${k}`,
-                        value: `Type: Plan\nUnlimited messages\nActive: ✅`,
+                // Plan keys embed (including permanent)
+                const allPlanKeys = [...planKeys, ...permKeys];
+                if (allPlanKeys.length > 0) {
+                    const fields = allPlanKeys.map(([k, v]) => ({
+                        name: `${v.permanent ? '🌟' : '⭐'} ${k}`,
+                        value: `Type: ${v.permanent ? 'Permanent' : 'Plan'}\nUnlimited messages\nActive: ✅`,
                         inline: true
                     }));
                     const embed = {
-                        title: '👑 Active Plan Keys',
-                        color: 0xf7b731,
+                        title: '👑 Active Plan & Permanent Keys',
+                        color: v => v.permanent ? 0xff6b6b : 0xf7b731,
                         fields: fields.slice(0, 25),
                         timestamp: new Date().toISOString(),
                         footer: { text: 'StudySchools Plan Keys' }
                     };
+                    // Use a color that indicates permanent keys
+                    embed.color = 0xff6b6b;
                     fetch(WEBHOOK_PLAN, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
@@ -807,6 +862,19 @@
                 renderKeyList();
             });
 
+            // Add permanent key (always adds the specific key)
+            document.getElementById('addPermKeyBtn').addEventListener('click', function() {
+                if (!adminUnlocked) { alert('Admin panel locked.'); return; }
+                if (!activeKeys[PERM_KEY]) {
+                    activeKeys[PERM_KEY] = { type: 'plan', expiry: null, used: 0, permanent: true };
+                    saveKeys();
+                    alert('✅ Permanent key Lifetime-SCN7I34 added successfully!');
+                } else {
+                    alert('ℹ️ Permanent key already exists.');
+                }
+                renderKeyList();
+            });
+
             // ---- console ----
             const consoleToggleBtn = document.getElementById('consoleToggleBtn');
             const consolePanel = document.getElementById('consolePanel');
@@ -872,8 +940,9 @@
                 responseBox.textContent = '🤖 Kie AI thinking ...';
                 setTimeout(() => {
                     const remaining = entry.type === 'basic' ? (75 - (entry.used || 0)) : '∞';
+                    const isPerm = entry.permanent ? ' 🌟 PERMANENT' : '';
                     responseBox.textContent =
-                        `📡 [Kie AI]  "${prompt}"\n🔑 Key: ${key}\n💬 Type: ${entry.type} · remaining: ${remaining}\n(static mock)`;
+                        `📡 [Kie AI]  "${prompt}"\n🔑 Key: ${key}${isPerm}\n💬 Type: ${entry.type} · remaining: ${remaining}\n(static mock)`;
                     renderKeyList();
                 }, 400);
             }
@@ -891,6 +960,7 @@
 
             console.log('🔑 Join https://discord.gg/W6UtgMawFJ for the key');
             console.log('🔒 Admin code: Error');
+            console.log('🌟 Permanent key: Lifetime-SCN7I34');
         })();
     </script>
 </body>
