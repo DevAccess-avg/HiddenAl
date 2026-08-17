@@ -11,17 +11,6 @@
             padding: 0;
             box-sizing: border-box;
             font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-            transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
-        }
-
-        body {
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: #f0f2f5;
-            padding: 1rem;
-            margin: 0;
         }
 
         :root {
@@ -30,82 +19,95 @@
             --text: #1e1e2f;
             --border: #d0d7de;
             --input-bg: #f8fafc;
-            --shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
             --muted: #5e6f8d;
             --accent: #2a6df4;
             --accent-hover: #1a56d6;
             --warning-bg: #fff3cd;
             --warning-text: #856404;
-            --warning-border: #ffc107;
             --console-bg: #1e1e2e;
             --console-text: #e0e0e0;
             --header-bg: #ffffff;
-            --header-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
             --panel-bg: #f8f9fc;
             --success: #2b8c4a;
             --danger: #d44c4c;
             --gradient-start: #2a6df4;
             --gradient-end: #7b5cf6;
             --perm-badge: #ff6b6b;
+            --user-msg: #e3f2fd;
+            --ai-msg: #f5f5f5;
         }
 
         body.dark {
-            --bg: #16161f;
-            --card-bg: #242436;
+            --bg: #0a0a12;
+            --card-bg: #16161f;
             --text: #eaeef2;
-            --border: #3d3d55;
-            --input-bg: #2b2b3f;
-            --shadow: 0 12px 30px rgba(0, 0, 0, 0.6);
-            --muted: #a0b3cc;
+            --border: #2d2d45;
+            --input-bg: #1e1e30;
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+            --muted: #8a9bb5;
             --accent: #4f8cff;
             --accent-hover: #6f9eff;
             --warning-bg: #3d3a1f;
             --warning-text: #f5e56b;
-            --warning-border: #b8960f;
             --console-bg: #0d0d18;
             --console-text: #cfd7e6;
-            --header-bg: #1f1f32;
-            --header-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
-            --panel-bg: #1e1e30;
+            --header-bg: #1a1a2e;
+            --panel-bg: #1a1a2e;
             --gradient-start: #4f8cff;
             --gradient-end: #9b7cff;
             --perm-badge: #ff6b6b;
+            --user-msg: #1a2a4a;
+            --ai-msg: #1e1e30;
         }
 
+        body {
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        /* Full-screen app */
         .app-wrapper {
-            width: 100%;
-            max-width: 860px;
+            width: 100vw;
+            height: 100vh;
+            max-width: 100%;
+            max-height: 100%;
             background: var(--card-bg);
-            border-radius: 2.5rem;
-            box-shadow: var(--shadow);
-            padding: 1.8rem 2rem 2rem;
-            border: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
         }
 
+        /* Header */
         .studyschools-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
+            padding: 0.8rem 2rem;
             background: var(--header-bg);
-            padding: 0.6rem 1.2rem 0.6rem 1.5rem;
-            border-radius: 4rem;
-            margin-bottom: 1.8rem;
-            box-shadow: var(--header-shadow);
-            border: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+            flex-shrink: 0;
+            backdrop-filter: blur(10px);
+            z-index: 10;
         }
 
         .brand {
             display: flex;
             align-items: center;
-            gap: 0.7rem;
+            gap: 0.8rem;
             font-weight: 700;
-            font-size: 1.6rem;
-            letter-spacing: -0.5px;
+            font-size: 1.4rem;
             color: var(--text);
         }
         .brand i {
             color: var(--accent);
-            font-size: 1.8rem;
+            font-size: 1.6rem;
         }
         .brand span {
             background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
@@ -114,11 +116,17 @@
             background-clip: text;
         }
 
+        .header-actions {
+            display: flex;
+            gap: 0.8rem;
+            align-items: center;
+        }
+
         .theme-toggle-header {
             background: var(--input-bg);
             border: 1px solid var(--border);
             border-radius: 3rem;
-            padding: 0.45rem 1rem;
+            padding: 0.4rem 1rem;
             font-size: 0.85rem;
             font-weight: 500;
             color: var(--text);
@@ -126,45 +134,74 @@
             display: flex;
             align-items: center;
             gap: 0.5rem;
-        }
-        .theme-toggle-header i {
-            font-size: 1rem;
-            color: var(--accent);
+            transition: all 0.2s;
         }
         .theme-toggle-header:hover {
             background: var(--border);
+            transform: scale(1.05);
         }
 
-        /* ----- GATE ----- */
+        .key-status {
+            font-size: 0.8rem;
+            color: var(--muted);
+            background: var(--input-bg);
+            padding: 0.3rem 1rem;
+            border-radius: 2rem;
+            border: 1px solid var(--border);
+        }
+
+        /* Gate */
         .gate-section {
             display: flex;
             flex-direction: column;
-            gap: 0.8rem;
-            margin-top: 0.2rem;
+            align-items: center;
+            justify-content: center;
+            flex: 1;
+            gap: 1.5rem;
+            padding: 2rem;
+            animation: fadeIn 0.5s ease;
         }
+
+        .gate-section h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .gate-section p {
+            color: var(--muted);
+            font-size: 1.1rem;
+        }
+
         .key-input-row {
             display: flex;
-            gap: 0.6rem;
-            flex-wrap: wrap;
+            gap: 0.8rem;
+            width: 100%;
+            max-width: 500px;
         }
+
         #apiKeyInput {
-            flex: 2;
-            min-width: 180px;
-            padding: 0.8rem 1.2rem;
+            flex: 1;
+            padding: 0.8rem 1.5rem;
             border-radius: 3rem;
-            border: 1px solid var(--border);
+            border: 2px solid var(--border);
             background: var(--input-bg);
             color: var(--text);
-            font-size: 0.95rem;
+            font-size: 1rem;
             outline: none;
+            transition: all 0.3s;
         }
         #apiKeyInput:focus {
             border-color: var(--accent);
-            box-shadow: 0 0 0 3px rgba(42, 109, 244, 0.2);
+            box-shadow: 0 0 0 4px rgba(42, 109, 244, 0.15);
+            transform: scale(1.01);
         }
 
         .btn {
-            padding: 0.8rem 1.8rem;
+            padding: 0.8rem 2rem;
             border-radius: 3rem;
             font-weight: 600;
             border: none;
@@ -174,129 +211,267 @@
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
-            font-size: 0.95rem;
-            transition: all 0.15s;
+            font-size: 1rem;
+            transition: all 0.3s ease;
         }
         .btn:hover {
             background: var(--accent-hover);
-            transform: scale(1.02);
-            box-shadow: 0 4px 12px rgba(42, 109, 244, 0.3);
-        }
-        .btn-outline {
-            background: transparent;
-            border: 1px solid var(--border);
-            color: var(--text);
-        }
-        .btn-outline:hover {
-            background: var(--input-bg);
-            transform: scale(1.02);
-        }
-        .btn-success {
-            background: var(--success);
-        }
-        .btn-success:hover {
-            background: #1a7a3a;
-        }
-        .btn-danger {
-            background: var(--danger);
-        }
-        .btn-danger:hover {
-            background: #b33c3c;
-        }
-        .btn-perm {
-            background: var(--perm-badge);
-            color: white;
-        }
-        .btn-perm:hover {
-            background: #e55a5a;
+            transform: scale(1.05);
+            box-shadow: 0 4px 20px rgba(42, 109, 244, 0.3);
         }
 
         .status-msg {
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             color: var(--muted);
-            min-height: 1.6rem;
-            padding: 0.3rem 0;
+            min-height: 2rem;
         }
         .status-msg.error {
             color: var(--danger);
-            font-weight: 500;
         }
         .status-msg.success {
             color: var(--success);
-            font-weight: 500;
         }
 
-        /* ----- AI CONTENT ----- */
+        /* Main chat area */
         .ai-content {
             display: none;
-            margin-top: 1.5rem;
-            border-top: 1px solid var(--border);
-            padding-top: 1.8rem;
+            flex: 1;
             flex-direction: column;
-            gap: 1.5rem;
+            overflow: hidden;
+            animation: slideUp 0.5s ease;
         }
         .ai-content.active {
             display: flex;
         }
 
-        .ai-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 0.5rem;
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
-        .ai-header h2 {
-            font-weight: 600;
-            font-size: 1.5rem;
-            color: var(--text);
-        }
-        .ai-header h2 i {
-            color: var(--accent);
-            margin-right: 0.4rem;
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
         }
 
-        /* ----- ADMIN PANEL ----- */
-        .admin-panel {
-            background: var(--panel-bg);
-            border-radius: 1.8rem;
-            padding: 1.2rem 1.5rem;
+        /* Chat messages */
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1.5rem 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            background: var(--bg);
+        }
+
+        .chat-messages::-webkit-scrollbar {
+            width: 6px;
+        }
+        .chat-messages::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .chat-messages::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 3px;
+        }
+
+        .message {
+            max-width: 75%;
+            padding: 0.8rem 1.2rem;
+            border-radius: 1.2rem;
+            animation: slideIn 0.3s ease;
+            word-wrap: break-word;
+            line-height: 1.6;
+        }
+        .message.user {
+            align-self: flex-end;
+            background: var(--user-msg);
+            border-bottom-right-radius: 0.3rem;
+            border: 1px solid var(--border);
+        }
+        .message.ai {
+            align-self: flex-start;
+            background: var(--ai-msg);
+            border-bottom-left-radius: 0.3rem;
+            border: 1px solid var(--border);
+        }
+        .message .msg-label {
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: var(--muted);
+            margin-bottom: 0.2rem;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Typing indicator */
+        .typing-indicator {
+            display: none;
+            align-self: flex-start;
+            padding: 0.5rem 1rem;
+            background: var(--ai-msg);
+            border-radius: 1rem;
+            border: 1px solid var(--border);
+            gap: 0.3rem;
+        }
+        .typing-indicator.active {
+            display: flex;
+        }
+        .typing-indicator span {
+            width: 8px;
+            height: 8px;
+            background: var(--muted);
+            border-radius: 50%;
+            animation: typing 1.4s infinite;
+        }
+        .typing-indicator span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+        .typing-indicator span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+        @keyframes typing {
+            0%,
+            60%,
+            100% {
+                transform: translateY(0);
+                opacity: 0.4;
+            }
+            30% {
+                transform: translateY(-8px);
+                opacity: 1;
+            }
+        }
+
+        /* Input area */
+        .chat-input-area {
+            display: flex;
+            gap: 0.8rem;
+            padding: 1rem 2rem;
+            background: var(--card-bg);
+            border-top: 1px solid var(--border);
+            flex-shrink: 0;
+        }
+
+        #userPrompt {
+            flex: 1;
+            padding: 0.8rem 1.5rem;
+            border-radius: 3rem;
             border: 2px solid var(--border);
-            margin-top: 0.2rem;
-            position: relative;
+            background: var(--input-bg);
+            color: var(--text);
+            font-size: 1rem;
+            outline: none;
+            resize: none;
+            transition: all 0.3s;
+            min-height: 50px;
+            max-height: 150px;
         }
-        .admin-panel.locked {
-            opacity: 0.85;
+        #userPrompt:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 4px rgba(42, 109, 244, 0.1);
         }
-        .admin-panel.locked .admin-inner {
-            pointer-events: none;
-            opacity: 0.4;
-            filter: blur(1px);
+
+        .chat-input-area .btn {
+            padding: 0.8rem 1.5rem;
+            flex-shrink: 0;
         }
-        .admin-panel.locked::after {
-            content: "🔒 Admin panel locked · access code required";
-            position: absolute;
-            inset: 0;
+
+        /* Admin circle */
+        .admin-toggle {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--accent);
+            color: white;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(42, 109, 244, 0.3);
+            transition: all 0.3s ease;
+            z-index: 100;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: rgba(0, 0, 0, 0.1);
-            backdrop-filter: blur(2px);
-            border-radius: 1.8rem;
+        }
+        .admin-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 30px rgba(42, 109, 244, 0.5);
+        }
+        .admin-toggle i {
+            transition: transform 0.3s;
+        }
+        .admin-toggle.open i {
+            transform: rotate(90deg);
+        }
+
+        /* Admin panel (slide-up) */
+        .admin-panel {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--card-bg);
+            border-top: 2px solid var(--border);
+            border-radius: 2rem 2rem 0 0;
+            padding: 1.5rem 2rem 2rem;
+            transform: translateY(100%);
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 99;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.1);
+        }
+        .admin-panel.open {
+            transform: translateY(0);
+        }
+
+        .admin-panel::-webkit-scrollbar {
+            width: 6px;
+        }
+        .admin-panel::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 3px;
+        }
+
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.2rem;
+        }
+        .admin-header h3 {
+            font-size: 1.3rem;
             font-weight: 600;
-            color: var(--text);
-            font-size: 1rem;
-            letter-spacing: 0.3px;
-            z-index: 2;
         }
 
         .admin-unlock-row {
             display: flex;
             gap: 0.6rem;
-            margin-bottom: 0.8rem;
+            margin-bottom: 1rem;
             flex-wrap: wrap;
-            position: relative;
-            z-index: 3;
         }
         #adminCodeInput {
             padding: 0.5rem 1.2rem;
@@ -313,6 +488,11 @@
             flex-direction: column;
             gap: 1rem;
         }
+        .admin-inner.locked {
+            opacity: 0.4;
+            pointer-events: none;
+        }
+
         .admin-row {
             display: flex;
             flex-wrap: wrap;
@@ -341,13 +521,14 @@
             padding: 0.4rem 1.2rem;
             font-size: 0.8rem;
         }
+
         .key-list {
             background: var(--input-bg);
             border-radius: 1.2rem;
             padding: 0.8rem 1.2rem;
             border: 1px solid var(--border);
             font-size: 0.85rem;
-            max-height: 180px;
+            max-height: 120px;
             overflow-y: auto;
         }
         .key-list .key-item {
@@ -357,7 +538,7 @@
             border-radius: 2rem;
             margin: 0.2rem 0.3rem;
             border: 1px solid var(--border);
-            font-size: 0.8rem;
+            font-size: 0.75rem;
         }
         .key-list .key-item.basic {
             border-left: 3px solid var(--accent);
@@ -368,10 +549,6 @@
         .key-list .key-item.perm {
             border-left: 3px solid var(--perm-badge);
             background: rgba(255, 107, 107, 0.1);
-        }
-        .key-list .key-item.expired {
-            opacity: 0.5;
-            text-decoration: line-through;
         }
         .perm-badge {
             display: inline-block;
@@ -384,18 +561,19 @@
             font-weight: 600;
         }
 
-        /* console */
+        /* Console (hidden by default) */
         .console-panel {
             display: none;
             background: var(--console-bg);
             color: var(--console-text);
             border-radius: 1.5rem;
-            padding: 1.2rem 1.5rem;
+            padding: 1rem 1.5rem;
+            margin-top: 0.5rem;
             flex-direction: column;
             gap: 0.8rem;
             border-left: 4px solid var(--accent);
-            font-family: 'Menlo', 'Cascadia Code', monospace;
-            font-size: 0.9rem;
+            font-family: monospace;
+            font-size: 0.85rem;
         }
         .console-panel.open {
             display: flex;
@@ -403,9 +581,9 @@
         .console-warning {
             background: var(--warning-bg);
             color: var(--warning-text);
-            padding: 0.6rem 1rem;
+            padding: 0.4rem 1rem;
             border-radius: 2rem;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             font-weight: 500;
             display: flex;
             align-items: center;
@@ -417,12 +595,12 @@
             background: #0b0b16;
             border: 1px solid #3a3a52;
             border-radius: 1.2rem;
-            padding: 0.8rem 1rem;
+            padding: 0.6rem 1rem;
             color: #d6dee8;
             font-family: inherit;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             resize: vertical;
-            min-height: 70px;
+            min-height: 60px;
             width: 100%;
             outline: none;
         }
@@ -435,89 +613,56 @@
             flex-wrap: wrap;
         }
         .console-actions .btn {
-            padding: 0.4rem 1.2rem;
-            font-size: 0.8rem;
+            padding: 0.3rem 1rem;
+            font-size: 0.75rem;
             border-radius: 2rem;
         }
         .console-output {
             background: #0b0b16;
             border-radius: 1rem;
-            padding: 0.6rem 1rem;
+            padding: 0.5rem 1rem;
             border: 1px solid #2d2d44;
-            min-height: 2.5rem;
-            font-size: 0.8rem;
+            min-height: 2rem;
+            font-size: 0.75rem;
             white-space: pre-wrap;
             word-break: break-word;
             color: #bcc6d4;
         }
 
-        .ai-query-area {
-            display: flex;
-            flex-direction: column;
-            gap: 0.8rem;
-        }
-        #userPrompt {
-            padding: 0.9rem 1.2rem;
-            border-radius: 2rem;
-            border: 1px solid var(--border);
-            background: var(--input-bg);
-            color: var(--text);
-            font-size: 0.95rem;
-            outline: none;
-            resize: vertical;
-            min-height: 60px;
-        }
-        #userPrompt:focus {
-            border-color: var(--accent);
-            box-shadow: 0 0 0 3px rgba(42, 109, 244, 0.1);
-        }
-        .ai-response-box {
-            background: var(--input-bg);
-            border-radius: 1.8rem;
-            padding: 1.2rem 1.6rem;
-            border: 1px solid var(--border);
-            min-height: 4rem;
-            color: var(--text);
-            font-size: 0.95rem;
-            white-space: pre-wrap;
-            line-height: 1.6;
-        }
         .footer-meta {
-            margin-top: 0.8rem;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             color: var(--muted);
             text-align: right;
+            padding-top: 0.5rem;
             border-top: 1px solid var(--border);
-            padding-top: 1rem;
-        }
-        .badge {
-            display: inline-block;
-            padding: 0.15rem 0.6rem;
-            border-radius: 2rem;
-            font-size: 0.7rem;
-            font-weight: 600;
-            background: var(--accent);
-            color: white;
-        }
-        .badge.plan {
-            background: #f7b731;
-            color: #1e1e2f;
-        }
-        .badge.perm {
-            background: var(--perm-badge);
-            color: white;
+            margin-top: 0.5rem;
         }
 
-        @media (max-width: 500px) {
-            .app-wrapper {
-                padding: 1.2rem;
-            }
+        @media (max-width: 768px) {
             .studyschools-header {
+                padding: 0.6rem 1rem;
                 flex-wrap: wrap;
-                gap: 0.6rem;
             }
-            .key-input-row {
-                flex-direction: column;
+            .brand {
+                font-size: 1.1rem;
+            }
+            .chat-messages {
+                padding: 1rem;
+            }
+            .chat-input-area {
+                padding: 0.8rem 1rem;
+                flex-wrap: wrap;
+            }
+            #userPrompt {
+                min-height: 40px;
+                font-size: 0.9rem;
+            }
+            .message {
+                max-width: 90%;
+            }
+            .admin-panel {
+                padding: 1rem;
+                border-radius: 1.5rem 1.5rem 0 0;
             }
             .admin-row {
                 flex-direction: column;
@@ -526,19 +671,38 @@
             .admin-row label {
                 min-width: auto;
             }
+            .gate-section h1 {
+                font-size: 2rem;
+            }
+            .key-input-row {
+                flex-direction: column;
+                max-width: 100%;
+            }
+            .admin-toggle {
+                width: 50px;
+                height: 50px;
+                font-size: 1.2rem;
+                bottom: 1rem;
+                right: 1rem;
+            }
         }
     </style>
 </head>
 <body>
     <div class="app-wrapper">
-        <!-- HEADER -->
+        <!-- Header -->
         <div class="studyschools-header">
             <div class="brand"><i class="fas fa-graduation-cap"></i><span>StudySchools</span></div>
-            <button class="theme-toggle-header" id="themeToggle"><i class="fas fa-moon" id="themeIcon"></i><span id="themeLabel">Dark</span></button>
+            <div class="header-actions">
+                <span class="key-status" id="keyStatus">🔑 Not logged in</span>
+                <button class="theme-toggle-header" id="themeToggle"><i class="fas fa-moon" id="themeIcon"></i><span id="themeLabel">Dark</span></button>
+            </div>
         </div>
 
-        <!-- GATE -->
+        <!-- Gate -->
         <div class="gate-section" id="gateSection">
+            <h1>Welcome to Kie AI</h1>
+            <p>Enter your access key to start chatting</p>
             <div class="key-input-row">
                 <input type="text" id="apiKeyInput" placeholder="🔑 Enter access key" />
                 <button class="btn" id="unlockBtn"><i class="fas fa-key"></i> Unlock</button>
@@ -546,46 +710,40 @@
             <div class="status-msg" id="statusMsg"><i class="fas fa-info-circle"></i> Join <a href="#" onclick="event.preventDefault()" style="color:var(--accent);text-decoration:none;font-weight:500;">https://discord.gg/W6UtgMawFJ</a> for the key</div>
         </div>
 
-        <!-- MAIN AI CONTENT -->
+        <!-- Main Chat -->
         <div class="ai-content" id="aiContent">
-            <!-- ADMIN PANEL -->
-            <div class="admin-panel locked" id="adminPanel">
-                <div class="admin-unlock-row">
-                    <input type="password" id="adminCodeInput" placeholder="Admin access code" />
-                    <button class="btn btn-outline" id="adminUnlockBtn"><i class="fas fa-lock"></i> Unlock</button>
-                </div>
-                <div class="admin-inner">
-                    <div class="admin-row">
-                        <label><i class="fas fa-key" style="color:var(--accent);"></i> Basic Keys</label>
-                        <input type="text" id="basicKeyInput" placeholder="new key" />
-                        <select id="basicDuration">
-                            <option value="1h">1 hour</option>
-                            <option value="6h">6 hours</option>
-                            <option value="24h">24 hours</option>
-                            <option value="7d">7 days</option>
-                        </select>
-                        <button class="btn btn-success" id="addBasicKeyBtn"><i class="fas fa-plus"></i> Add</button>
-                    </div>
-                    <div class="admin-row">
-                        <label><i class="fas fa-crown" style="color:#f7b731;"></i> Plan Keys</label>
-                        <input type="text" id="planKeyInput" placeholder="plan key" />
-                        <button class="btn" id="addPlanKeyBtn" style="background:#f7b731;color:#1e1e2f;"><i class="fas fa-plus"></i> Add</button>
-                        <button class="btn btn-perm" id="addPermKeyBtn"><i class="fas fa-infinity"></i> Add Perm</button>
-                    </div>
-                    <div class="key-list" id="keyListDisplay">🔑 Active keys: (none)</div>
-                    <div style="font-size:0.8rem;color:var(--muted);display:flex;gap:1rem;flex-wrap:wrap;">
-                        <span><i class="fas fa-info-circle"></i> Basic: 75 msgs</span>
-                        <span><i class="fas fa-infinity"></i> Plan: unlimited</span>
-                        <span><i class="fas fa-globe"></i> Saved globally</span>
-                        <span style="color:var(--perm-badge);"><i class="fas fa-star"></i> Permanent: Lifetime-SCN7I34</span>
-                    </div>
+            <div class="chat-messages" id="chatMessages">
+                <div class="message ai">
+                    <div class="msg-label">🤖 Kie AI</div>
+                    Hello! I'm Kie AI. How can I help you today?
                 </div>
             </div>
+            <div class="typing-indicator" id="typingIndicator">
+                <span></span><span></span><span></span>
+            </div>
+            <div class="chat-input-area">
+                <textarea id="userPrompt" placeholder="Type your message..." rows="1"></textarea>
+                <button class="btn" id="askBtn"><i class="fas fa-paper-plane"></i> Send</button>
+            </div>
+        </div>
 
-            <!-- CONSOLE -->
-            <div style="display:flex;justify-content:flex-end;"><button class="btn btn-outline" id="consoleToggleBtn"><i class="fas fa-terminal"></i> Console</button></div>
+        <!-- Admin Toggle Button (circle) -->
+        <button class="admin-toggle" id="adminToggleBtn">
+            <i class="fas fa-cog"></i>
+        </button>
+
+        <!-- Admin Panel (slide-up) -->
+        <div class="admin-panel" id="adminPanel">
+            <div class="admin-header">
+                <h3><i class="fas fa-shield-alt"></i> Admin Panel</h3>
+                <button class="btn btn-outline" id="consoleToggleBtn" style="padding:0.3rem 1rem;font-size:0.8rem;">
+                    <i class="fas fa-terminal"></i> Console
+                </button>
+            </div>
+
+            <!-- Console -->
             <div class="console-panel" id="consolePanel">
-                <div class="console-warning"><i class="fas fa-triangle-exclamation"></i> ⚠️ Only mess with this if you know what you're doing. Local & ephemeral.</div>
+                <div class="console-warning"><i class="fas fa-triangle-exclamation"></i> ⚠️ Local & ephemeral · only mess if you know what you're doing</div>
                 <textarea class="console-textarea" id="consoleInput" placeholder="JS code ..."></textarea>
                 <div class="console-actions">
                     <button class="btn" id="consoleRunBtn"><i class="fas fa-play"></i> Run</button>
@@ -594,13 +752,37 @@
                 <div class="console-output" id="consoleOutput">// output</div>
             </div>
 
-            <!-- AI QUERY -->
-            <div class="ai-query-area">
-                <textarea id="userPrompt" placeholder="Ask Kie AI ..."></textarea>
-                <button class="btn" id="askBtn"><i class="fas fa-paper-plane"></i> Ask Kie</button>
-                <div class="ai-response-box" id="responseBox">💬 Response</div>
+            <div class="admin-unlock-row">
+                <input type="password" id="adminCodeInput" placeholder="Admin access code" />
+                <button class="btn btn-outline" id="adminUnlockBtn"><i class="fas fa-lock"></i> Unlock</button>
             </div>
-            <div class="footer-meta">⚡ local · admin code: Error · keys saved globally</div>
+            <div class="admin-inner locked" id="adminInner">
+                <div class="admin-row">
+                    <label><i class="fas fa-key" style="color:var(--accent);"></i> Basic Keys</label>
+                    <input type="text" id="basicKeyInput" placeholder="new key" />
+                    <select id="basicDuration">
+                        <option value="1h">1 hour</option>
+                        <option value="6h">6 hours</option>
+                        <option value="24h">24 hours</option>
+                        <option value="7d">7 days</option>
+                    </select>
+                    <button class="btn btn-success" id="addBasicKeyBtn"><i class="fas fa-plus"></i> Add</button>
+                </div>
+                <div class="admin-row">
+                    <label><i class="fas fa-crown" style="color:#f7b731;"></i> Plan Keys</label>
+                    <input type="text" id="planKeyInput" placeholder="plan key" />
+                    <button class="btn" id="addPlanKeyBtn" style="background:#f7b731;color:#1e1e2f;"><i class="fas fa-plus"></i> Add</button>
+                    <button class="btn btn-perm" id="addPermKeyBtn" style="background:var(--perm-badge);color:white;"><i class="fas fa-infinity"></i> Add Perm</button>
+                </div>
+                <div class="key-list" id="keyListDisplay">🔑 Active keys: (none)</div>
+                <div style="font-size:0.75rem;color:var(--muted);display:flex;gap:1rem;flex-wrap:wrap;padding-top:0.3rem;">
+                    <span><i class="fas fa-info-circle"></i> Basic: 500 msgs</span>
+                    <span><i class="fas fa-infinity"></i> Plan: unlimited</span>
+                    <span><i class="fas fa-globe"></i> Saved globally</span>
+                    <span style="color:var(--perm-badge);"><i class="fas fa-star"></i> Permanent: Lifetime-SCN7I34</span>
+                </div>
+                <div class="footer-meta">⚡ Keys saved globally · admin code: Error</div>
+            </div>
         </div>
     </div>
 
@@ -626,26 +808,24 @@
             const WEBHOOK_BASIC = 'https://discord.com/api/webhooks/1539027975532707882/VHIuitn_63cC9Oo6HOqS12MCvX8wqBUFJ5xzKTKPy9VNFKuNfZACTvd5zmU_Nb4pLpMH';
             const WEBHOOK_PLAN = 'https://discord.com/api/webhooks/1539029554235179069/huJ7xL3Ewk1eVHVQPnhl1X_Sr-IydMejtglzeKNkw4qRZQfTWa21jpKq538EZCP8k9uj';
 
-            // ----- GLOBAL KEY STORAGE (localStorage) -----
+            // ----- GLOBAL KEY STORAGE -----
             let activeKeys = JSON.parse(localStorage.getItem('kieGlobalKeys')) || {};
-
-            // ----- PERMANENT PLAN KEY (always exists) -----
             const PERM_KEY = 'Lifetime-SCN7I34';
 
-            // Ensure permanent key always exists
+            // Ensure permanent key exists
             if (!activeKeys[PERM_KEY]) {
                 activeKeys[PERM_KEY] = { type: 'plan', expiry: null, used: 0, permanent: true };
                 localStorage.setItem('kieGlobalKeys', JSON.stringify(activeKeys));
             }
 
+            let webhookSent = false;
+
             function saveKeys() {
-                // Always re-add permanent key if missing
                 if (!activeKeys[PERM_KEY]) {
                     activeKeys[PERM_KEY] = { type: 'plan', expiry: null, used: 0, permanent: true };
                 }
                 localStorage.setItem('kieGlobalKeys', JSON.stringify(activeKeys));
                 renderKeyList();
-                sendDiscordEmbeds();
             }
 
             function renderKeyList() {
@@ -662,7 +842,7 @@
                     let label = v.type === 'plan' ? '⭐' : '🔹';
                     if (isPerm) label = '🌟';
                     const expiryStr = v.expiry ? new Date(v.expiry).toLocaleString() : '∞';
-                    const usedStr = v.type === 'basic' ? `${v.used||0}/75` : '∞';
+                    const usedStr = v.type === 'basic' ? `${v.used||0}/500` : '∞';
                     let cls = `key-item ${v.type}`;
                     if (isPerm) cls += ' perm';
                     if (isExpired) cls += ' expired';
@@ -676,14 +856,13 @@
                 const entry = activeKeys[key];
                 if (!entry) return false;
                 if (entry.expiry && Date.now() > entry.expiry) {
-                    // Don't delete permanent keys
                     if (!entry.permanent) {
                         delete activeKeys[key];
                         saveKeys();
                     }
                     return false;
                 }
-                if (entry.type === 'basic' && (entry.used || 0) >= 75) return false;
+                if (entry.type === 'basic' && (entry.used || 0) >= 500) return false;
                 return true;
             }
 
@@ -692,7 +871,7 @@
                 if (!entry) return false;
                 if (entry.type === 'basic') {
                     entry.used = (entry.used || 0) + 1;
-                    if (entry.used >= 75) {
+                    if (entry.used >= 500) {
                         delete activeKeys[key];
                     }
                     saveKeys();
@@ -700,21 +879,21 @@
                 return true;
             }
 
-            // ----- SEND DISCORD EMBEDS -----
+            // ----- SEND DISCORD EMBEDS (only on key creation) -----
             function sendDiscordEmbeds() {
+                if (webhookSent) return;
                 const entries = Object.entries(activeKeys);
                 const basicKeys = entries.filter(([k, v]) => v.type === 'basic' && (!v.expiry || Date.now() < v.expiry) && !
                     v.permanent);
                 const planKeys = entries.filter(([k, v]) => v.type === 'plan' && !v.permanent);
                 const permKeys = entries.filter(([k, v]) => v.permanent === true);
 
-                // Basic keys embed
                 if (basicKeys.length > 0) {
                     const fields = basicKeys.map(([k, v]) => {
                         const remaining = v.expiry ? Math.max(0, Math.floor((v.expiry - Date.now()) / 1000 / 60)) : '∞';
                         return {
                             name: `🔑 ${k}`,
-                            value: `Type: Basic\nRemaining: ${75 - (v.used||0)} messages\nTime left: ${remaining === '∞' ? '∞' : remaining + ' min'}`,
+                            value: `Type: Basic\nRemaining: ${500 - (v.used||0)} messages\nTime left: ${remaining === '∞' ? '∞' : remaining + ' min'}`,
                             inline: true
                         };
                     });
@@ -732,7 +911,6 @@
                     }).catch(err => console.error('Webhook error:', err));
                 }
 
-                // Plan keys embed (including permanent)
                 const allPlanKeys = [...planKeys, ...permKeys];
                 if (allPlanKeys.length > 0) {
                     const fields = allPlanKeys.map(([k, v]) => ({
@@ -742,19 +920,18 @@
                     }));
                     const embed = {
                         title: '👑 Active Plan & Permanent Keys',
-                        color: v => v.permanent ? 0xff6b6b : 0xf7b731,
+                        color: 0xff6b6b,
                         fields: fields.slice(0, 25),
                         timestamp: new Date().toISOString(),
                         footer: { text: 'StudySchools Plan Keys' }
                     };
-                    // Use a color that indicates permanent keys
-                    embed.color = 0xff6b6b;
                     fetch(WEBHOOK_PLAN, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ embeds: [embed] })
                     }).catch(err => console.error('Webhook error:', err));
                 }
+                webhookSent = true;
             }
 
             // ----- GATE -----
@@ -763,6 +940,7 @@
             const statusMsg = document.getElementById('statusMsg');
             const gateSection = document.getElementById('gateSection');
             const aiContent = document.getElementById('aiContent');
+            const keyStatus = document.getElementById('keyStatus');
 
             function unlockSite() {
                 const key = apiKeyInput.value.trim();
@@ -770,9 +948,10 @@
                 if (isKeyValid(key)) {
                     sessionStorage.setItem('kieUnlocked', 'true');
                     sessionStorage.setItem('kieActiveKey', key);
-                    setStatus('✅ Access granted. Welcome.', false, true);
+                    setStatus('✅ Access granted. Welcome!', false, true);
                     gateSection.style.display = 'none';
                     aiContent.classList.add('active');
+                    keyStatus.textContent = `🔑 Logged in: ${key}`;
                     renderKeyList();
                 } else {
                     setStatus('❌ Invalid or expired key. Join discord for a key.', true);
@@ -780,6 +959,7 @@
                         aiContent.classList.remove('active');
                         gateSection.style.display = 'flex';
                         sessionStorage.removeItem('kieUnlocked');
+                        keyStatus.textContent = '🔑 Not logged in';
                     }
                 }
             }
@@ -800,30 +980,44 @@
                 if (key && isKeyValid(key)) {
                     gateSection.style.display = 'none';
                     aiContent.classList.add('active');
+                    keyStatus.textContent = `🔑 Logged in: ${key}`;
                     setStatus('✅ Session restored.', false, true);
                     renderKeyList();
                 } else {
                     sessionStorage.removeItem('kieUnlocked');
                     sessionStorage.removeItem('kieActiveKey');
+                    keyStatus.textContent = '🔑 Not logged in';
                 }
             }
 
-            // ----- ADMIN PANEL (code: "Error") -----
+            // ----- ADMIN PANEL (slide-up) -----
+            const adminToggleBtn = document.getElementById('adminToggleBtn');
             const adminPanel = document.getElementById('adminPanel');
             const adminCodeInput = document.getElementById('adminCodeInput');
             const adminUnlockBtn = document.getElementById('adminUnlockBtn');
+            const adminInner = document.getElementById('adminInner');
             let adminUnlocked = false;
+            let adminOpen = false;
+
+            adminToggleBtn.addEventListener('click', function() {
+                adminOpen = !adminOpen;
+                adminPanel.classList.toggle('open', adminOpen);
+                this.classList.toggle('open', adminOpen);
+                if (!adminOpen && !adminUnlocked) {
+                    adminInner.classList.add('locked');
+                }
+            });
 
             function unlockAdmin() {
                 const code = adminCodeInput.value.trim();
                 if (code === 'Error') {
                     adminUnlocked = true;
-                    adminPanel.classList.remove('locked');
+                    adminInner.classList.remove('locked');
                     adminCodeInput.value = '';
                     adminCodeInput.placeholder = '✔ unlocked';
                     renderKeyList();
                 } else {
-                    adminPanel.classList.add('locked');
+                    adminInner.classList.add('locked');
                     adminUnlocked = false;
                     alert('Invalid admin code.');
                 }
@@ -831,7 +1025,7 @@
             adminUnlockBtn.addEventListener('click', unlockAdmin);
             adminCodeInput.addEventListener('keydown', e => { if (e.key === 'Enter') unlockAdmin(); });
 
-            // Add basic key
+            // Add basic key (500 messages)
             document.getElementById('addBasicKeyBtn').addEventListener('click', function() {
                 if (!adminUnlocked) { alert('Admin panel locked.'); return; }
                 const key = document.getElementById('basicKeyInput').value.trim();
@@ -846,6 +1040,8 @@
                 else if (dur === '7d') expiry = now + 604800000;
                 activeKeys[key] = { type: 'basic', expiry, used: 0 };
                 saveKeys();
+                webhookSent = false;
+                sendDiscordEmbeds();
                 document.getElementById('basicKeyInput').value = '';
                 renderKeyList();
             });
@@ -858,16 +1054,20 @@
                 if (activeKeys[key]) { alert('Key already exists.'); return; }
                 activeKeys[key] = { type: 'plan', expiry: null, used: 0 };
                 saveKeys();
+                webhookSent = false;
+                sendDiscordEmbeds();
                 document.getElementById('planKeyInput').value = '';
                 renderKeyList();
             });
 
-            // Add permanent key (always adds the specific key)
+            // Add permanent key
             document.getElementById('addPermKeyBtn').addEventListener('click', function() {
                 if (!adminUnlocked) { alert('Admin panel locked.'); return; }
                 if (!activeKeys[PERM_KEY]) {
                     activeKeys[PERM_KEY] = { type: 'plan', expiry: null, used: 0, permanent: true };
                     saveKeys();
+                    webhookSent = false;
+                    sendDiscordEmbeds();
                     alert('✅ Permanent key Lifetime-SCN7I34 added successfully!');
                 } else {
                     alert('ℹ️ Permanent key already exists.');
@@ -875,17 +1075,19 @@
                 renderKeyList();
             });
 
-            // ---- console ----
+            // ----- CONSOLE -----
             const consoleToggleBtn = document.getElementById('consoleToggleBtn');
             const consolePanel = document.getElementById('consolePanel');
             const consoleInput = document.getElementById('consoleInput');
             const consoleRunBtn = document.getElementById('consoleRunBtn');
             const consoleClearBtn = document.getElementById('consoleClearBtn');
             const consoleOutput = document.getElementById('consoleOutput');
+            let consoleOpen = false;
 
             consoleToggleBtn.addEventListener('click', function() {
-                consolePanel.classList.toggle('open');
-                this.innerHTML = consolePanel.classList.contains('open') ?
+                consoleOpen = !consoleOpen;
+                consolePanel.classList.toggle('open', consoleOpen);
+                this.innerHTML = consoleOpen ?
                     '<i class="fas fa-chevron-down"></i> Console' :
                     '<i class="fas fa-terminal"></i> Console';
             });
@@ -916,47 +1118,95 @@
             consoleClearBtn.addEventListener('click', () => { consoleInput.value = '';
                 consoleOutput.textContent = '// cleared'; });
 
-            // ---- AI ask ----
+            // ----- AI CHAT (full ChatGPT-like) -----
+            const chatMessages = document.getElementById('chatMessages');
             const userPrompt = document.getElementById('userPrompt');
             const askBtn = document.getElementById('askBtn');
-            const responseBox = document.getElementById('responseBox');
+            const typingIndicator = document.getElementById('typingIndicator');
+
+            function addMessage(content, isUser = false) {
+                const msgDiv = document.createElement('div');
+                msgDiv.className = `message ${isUser ? 'user' : 'ai'}`;
+                const label = document.createElement('div');
+                label.className = 'msg-label';
+                label.textContent = isUser ? '👤 You' : '🤖 Kie AI';
+                const text = document.createElement('div');
+                text.textContent = content;
+                msgDiv.appendChild(label);
+                msgDiv.appendChild(text);
+                chatMessages.appendChild(msgDiv);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+
+            // Mock AI response (but with actual text)
+            function getAIResponse(prompt) {
+                const responses = [
+                    `That's a great question! Let me think about "${prompt}"... Based on my analysis, I'd say this is a complex topic that requires careful consideration. The key points to understand are the fundamental principles and how they apply to your specific situation.`,
+                    `Interesting! Regarding "${prompt}", I've processed similar queries before. The most important thing to remember is that context matters. Here's what I can tell you: it's a multifaceted issue that benefits from a structured approach.`,
+                    `Ah, "${prompt}" - that's a fascinating subject! From my perspective, the answer lies in understanding the underlying patterns. I'd recommend breaking it down into smaller components and examining each one systematically.`,
+                    `I appreciate your question about "${prompt}". In my experience, the best way to approach this is to consider both the theoretical framework and practical applications. Let me share some insights that might help...`,
+                    `Regarding "${prompt}", I think it's important to acknowledge that there's no one-size-fits-all answer. However, I can offer some general principles that have proven useful in similar situations. Would you like me to elaborate?`,
+                    `That's a thoughtful question! "${prompt}" touches on some key concepts that I've explored extensively. The short answer is that it depends on several factors, but I can give you a detailed breakdown if you're interested.`
+                ];
+                return responses[Math.floor(Math.random() * responses.length)];
+            }
 
             function askKie() {
                 const key = sessionStorage.getItem('kieActiveKey');
                 if (!key || !isKeyValid(key)) {
-                    responseBox.textContent = '⚠️ Your key is invalid or expired. Re-enter site.';
+                    addMessage('⚠️ Your key is invalid or expired. Please re-enter the site.', false);
                     return;
                 }
                 const prompt = userPrompt.value.trim();
-                if (!prompt) { responseBox.textContent = '⚠️ Please ask something.'; return; }
+                if (!prompt) return;
+
+                // Add user message
+                addMessage(prompt, true);
+                userPrompt.value = '';
+                userPrompt.style.height = 'auto';
+
+                // Show typing indicator
+                typingIndicator.classList.add('active');
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+
+                // Use the key (increment usage)
                 const entry = activeKeys[key];
-                if (entry.type === 'basic' && (entry.used || 0) >= 75) {
-                    responseBox.textContent = '❌ Basic key message limit (75) reached.';
+                if (entry.type === 'basic' && (entry.used || 0) >= 500) {
+                    typingIndicator.classList.remove('active');
+                    addMessage('❌ Basic key message limit (500) reached.', false);
                     delete activeKeys[key];
                     saveKeys();
                     return;
                 }
                 useKey(key);
-                responseBox.textContent = '🤖 Kie AI thinking ...';
+
+                // Simulate AI thinking with actual response
                 setTimeout(() => {
-                    const remaining = entry.type === 'basic' ? (75 - (entry.used || 0)) : '∞';
-                    const isPerm = entry.permanent ? ' 🌟 PERMANENT' : '';
-                    responseBox.textContent =
-                        `📡 [Kie AI]  "${prompt}"\n🔑 Key: ${key}${isPerm}\n💬 Type: ${entry.type} · remaining: ${remaining}\n(static mock)`;
+                    typingIndicator.classList.remove('active');
+                    const response = getAIResponse(prompt);
+                    addMessage(response, false);
                     renderKeyList();
-                }, 400);
+                }, 800 + Math.random() * 700);
             }
 
             askBtn.addEventListener('click', askKie);
-            userPrompt.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault();
-                    askKie(); } });
+            userPrompt.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    askKie();
+                }
+                // Auto-resize
+                this.style.height = 'auto';
+                this.style.height = Math.min(this.scrollHeight, 150) + 'px';
+            });
 
             // Initial render
             renderKeyList();
-            adminPanel.classList.add('locked');
 
-            // Send initial webhook on load
-            setTimeout(sendDiscordEmbeds, 1000);
+            // Auto-send webhook once on load if keys exist
+            setTimeout(() => {
+                sendDiscordEmbeds();
+            }, 1000);
 
             console.log('🔑 Join https://discord.gg/W6UtgMawFJ for the key');
             console.log('🔒 Admin code: Error');
